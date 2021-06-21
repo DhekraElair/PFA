@@ -45,6 +45,7 @@ class User
      */
     private $role;
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -109,4 +110,5 @@ class User
 
         return $this;
     }
+
 }
