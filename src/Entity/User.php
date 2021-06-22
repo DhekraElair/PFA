@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -45,6 +47,23 @@ class User
      */
     private $role;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Event::class, mappedBy="id_event")
+     */
+    private $events;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Event::class, inversedBy="users")
+     */
+    private $id_user;
+
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
+        $this->id_user = new ArrayCollection();
+    }
+
+    
 
     public function getId(): ?int
     {
@@ -110,5 +129,57 @@ class User
 
         return $this;
     }
+
+    /**
+     * @return Collection|Event[]
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events[] = $event;
+            $event->addIdEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): self
+    {
+        if ($this->events->removeElement($event)) {
+            $event->removeIdEvent($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Event[]
+     */
+    public function getIdUser(): Collection
+    {
+        return $this->id_user;
+    }
+
+    public function addIdUser(Event $idUser): self
+    {
+        if (!$this->id_user->contains($idUser)) {
+            $this->id_user[] = $idUser;
+        }
+
+        return $this;
+    }
+
+    public function removeIdUser(Event $idUser): self
+    {
+        $this->id_user->removeElement($idUser);
+
+        return $this;
+    }
+
 
 }
