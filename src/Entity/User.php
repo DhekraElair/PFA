@@ -48,22 +48,11 @@ class User
     private $role;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Event::class, mappedBy="id_event")
+     * @ORM\ManyToOne(targetEntity=Inscription::class, inversedBy="users")
      */
-    private $events;
+    private $inscription;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Event::class, inversedBy="users")
-     */
-    private $id_user;
 
-    public function __construct()
-    {
-        $this->events = new ArrayCollection();
-        $this->id_user = new ArrayCollection();
-    }
-
-    
 
     public function getId(): ?int
     {
@@ -130,53 +119,14 @@ class User
         return $this;
     }
 
-    /**
-     * @return Collection|Event[]
-     */
-    public function getEvents(): Collection
+    public function getInscription(): ?Inscription
     {
-        return $this->events;
+        return $this->inscription;
     }
 
-    public function addEvent(Event $event): self
+    public function setInscription(?Inscription $inscription): self
     {
-        if (!$this->events->contains($event)) {
-            $this->events[] = $event;
-            $event->addIdEvent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEvent(Event $event): self
-    {
-        if ($this->events->removeElement($event)) {
-            $event->removeIdEvent($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Event[]
-     */
-    public function getIdUser(): Collection
-    {
-        return $this->id_user;
-    }
-
-    public function addIdUser(Event $idUser): self
-    {
-        if (!$this->id_user->contains($idUser)) {
-            $this->id_user[] = $idUser;
-        }
-
-        return $this;
-    }
-
-    public function removeIdUser(Event $idUser): self
-    {
-        $this->id_user->removeElement($idUser);
+        $this->inscription = $inscription;
 
         return $this;
     }

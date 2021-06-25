@@ -51,6 +51,16 @@ class Event
      */
     private $type;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Inscription::class, mappedBy="event")
+     */
+    private $inscriptions;
+
+    public function __construct()
+    {
+        $this->inscriptions = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -130,55 +140,35 @@ class Event
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection|Inscription[]
      */
-    public function getIdEvent(): Collection
+    public function getInscriptions(): Collection
     {
-        return $this->id_event;
+        return $this->inscriptions;
     }
 
-    public function addIdEvent(User $idEvent): self
+    public function addInscription(Inscription $inscription): self
     {
-        if (!$this->id_event->contains($idEvent)) {
-            $this->id_event[] = $idEvent;
+        if (!$this->inscriptions->contains($inscription)) {
+            $this->inscriptions[] = $inscription;
+            $inscription->setEvent($this);
         }
 
         return $this;
     }
 
-    public function removeIdEvent(User $idEvent): self
+    public function removeInscription(Inscription $inscription): self
     {
-        $this->id_event->removeElement($idEvent);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|User[]
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->addIdUser($this);
+        if ($this->inscriptions->removeElement($inscription)) {
+            // set the owning side to null (unless already changed)
+            if ($inscription->getEvent() === $this) {
+                $inscription->setEvent(null);
+            }
         }
 
         return $this;
     }
 
-    public function removeUser(User $user): self
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeIdUser($this);
-        }
-
-        return $this;
-    }
 
 
 }
