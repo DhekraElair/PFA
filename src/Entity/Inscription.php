@@ -5,10 +5,12 @@ namespace App\Entity;
 use App\Repository\InscriptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=InscriptionRepository::class)
+ * @ApiResource()
  */
 class Inscription
 {
@@ -34,20 +36,27 @@ class Inscription
      */
     private $updatedAt;
 
-    /**
-     * @ORM\OneToMany(targetEntity=user::class, mappedBy="inscription")
-     */
-    private $users;
+
 
     /**
      * @ORM\ManyToOne(targetEntity=Event::class, inversedBy="inscriptions")
      */
     private $event;
 
-    public function __construct()
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="inscription")
+     */
+    private $user;
+
+    /**
+     * Inscription constructor.
+     * @param $user
+     */
+    public function __construct($user)
     {
-        $this->users = new ArrayCollection();
+        $this->user = $user;
     }
+
 
     public function getId(): ?int
     {
@@ -90,23 +99,7 @@ class Inscription
         return $this;
     }
 
-    /**
-     * @return Collection|user[]
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
 
-    public function addUser(user $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->setInscription($this);
-        }
-
-        return $this;
-    }
 
     public function removeUser(user $user): self
     {
@@ -128,6 +121,18 @@ class Inscription
     public function setEvent(?Event $event): self
     {
         $this->event = $event;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

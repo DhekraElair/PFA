@@ -9,9 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ *
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
+ * @ApiResource()
  */
 class User
 {
@@ -48,10 +49,14 @@ class User
     private $role;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Inscription::class, inversedBy="users")
+     * @ORM\OneToMany(targetEntity=Inscription::class, mappedBy="user")
      */
     private $inscription;
 
+    public function __construct()
+    {
+        $this->inscription = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -119,14 +124,32 @@ class User
         return $this;
     }
 
-    public function getInscription(): ?Inscription
+    /**
+     * @return Collection|Inscription[]
+     */
+    public function getInscription(): Collection
     {
         return $this->inscription;
     }
 
-    public function setInscription(?Inscription $inscription): self
+    public function addInscription(Inscription $inscription): self
     {
-        $this->inscription = $inscription;
+        if (!$this->inscription->contains($inscription)) {
+            $this->inscription[] = $inscription;
+            $inscription->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInscription(Inscription $inscription): self
+    {
+        if ($this->inscription->removeElement($inscription)) {
+            // set the owning side to null (unless already changed)
+            if ($inscription->getUser() === $this) {
+                $inscription->setUser(null);
+            }
+        }
 
         return $this;
     }
