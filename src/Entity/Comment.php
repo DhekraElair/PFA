@@ -29,6 +29,16 @@ class Comment
      */
     private $creationDate;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
+     */
+    private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Event::class, inversedBy="comments")
+     */
+    private $event;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -54,6 +64,30 @@ class Comment
     public function setCreationDate(\DateTimeInterface $creationDate): self
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getEvent(): ?Event
+    {
+        return $this->event;
+    }
+
+    public function setEvent(?Event $event): self
+    {
+        $this->event = $event;
 
         return $this;
     }
