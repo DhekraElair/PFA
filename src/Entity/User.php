@@ -14,10 +14,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  * @ApiResource(
- *     normalizationContext={"groups"={"write:user"}},
+ *
  *     collectionOperations={
  *          "get"={
- *          "normalization_context"={"groups"={"read:user"}}
+ *          "normalization_context"={"groups"={"read:user:collection"}}
  *          },
  *       "post"={
  *       "denormalization_context"={
@@ -28,7 +28,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     },
  *     itemOperations={
  *         "put"={
- *          "denormalization_context"={"groups"={"write:user"}}
+ *          "denormalization_context"={"groups"={"write:user:item"}}
  *          },
  *          "get","delete"={
  *              "normalization_context"={"groups"={"read:user:item"}
@@ -43,37 +43,37 @@ class User
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("read:User","read:user:item")
+     * @Groups("read:user","read:user:item")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:User","write:user","read:user:item"})
+     * @Groups({"read:user:collection","write:user","read:user:item"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:User","write:user","read:user:item"})
+     * @Groups({"read:user","write:user","read:user:item"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("write:user","read:user:item")
+     * @Groups("write:user","read:user:item","read:user")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("write:user")
+     * @Groups("write:user","read:user:item")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("read:User","write:user","read:user:item")
+     * @Groups("read:user","write:user","read:user:item")
      */
     private $role;
 
